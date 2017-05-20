@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Noticias App  </string>
+    <string name="action_settings">ajuste</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="News">Noticias</string>
+    <string name="Photos">Fotos</string>
+    <string name="MemorablePlaces">Lugares memorables</string>
+</resources>
