@@ -26,7 +26,38 @@
         android:layout_marginLeft="20dp"
         />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/userImage"
+        android:layout_below="@+id/btnCapture"/>
 
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:padding="15dp"
+        android:layout_marginTop="40dp"
+        android:layout_below="@id/userImage"
+        />
+    <Button
+        android:id="@+id/btn_send_broadcast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="Send Broadcast"
+        android:layout_below="@id/tv"
+        />
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/btn_send_broadcast" >
+
+    </ImageView>
 
 
 </RelativeLayout>

@@ -14,6 +14,7 @@
 
     <uses-feature android:name="android.hardware.camera"/>
 
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -38,12 +39,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable">
+            </meta-data>
         </activity>
         <activity android:name=".NewsActivity">
-
-
-
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -62,15 +63,23 @@
             android:label="@string/title_activity_maps">
         </activity>
 
-
         <!--
            Because android:exported is set to "false",
            the service is only available to this app.
-       -->
+        -->
         <service
             android:name=".NewsPullService"
             android:exported="false"/>
 
+        <receiver android:name=".MyReceiver">
+            <intent-filter>
+                <action android:name="project.min.school.schoolapp">
+                </action>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ArticlesDataBinding">
+        </activity>
 
     </application>
 

@@ -73,7 +73,7 @@ public class MemorablePlaces extends Fragment {
         } else {
 
             places.add("Add a new place...");
-            locations.add(new LatLng(0, 0));
+            locations.add(new LatLng(52.3702, 4.8952));
 
         }
 

@@ -35,6 +35,7 @@ import java.util.Locale;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap;
+    //private LatLngBounds AUSTRALIA  = new LatLngBounds(new LatLng(-44, 113), new LatLng(-10, 154));
 
 
     LocationManager locationManager;
@@ -74,6 +75,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 10));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(AUSTRALIA .getCenter(), 10));
+       // mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f));
+
+
+
 
     }
 
@@ -119,7 +125,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     centerMapOnLocation(location, "Your location");
 
+                    //Move the camera to the user's location and zoom in!
+
                 }
+
+
 
                 @Override
                 public void onStatusChanged(String s, int i, Bundle bundle) {

@@ -15,6 +15,7 @@ import android.util.Log;
 public class NewsPullService extends IntentService {
 
     private static final String TAG = "PollService";
+
     public static Intent newIntent(Context context) {
         return new Intent(context, NewsPullService.class);
     }

@@ -9,8 +9,9 @@
 
 
     </style>
-    <style name="listView">
+    <style name="AppTheme.listView">
         <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
     
 
@@ -22,6 +23,9 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 package project.min.school.schoolapp;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,9 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -27,8 +30,20 @@ public class Photos extends Fragment {
 
     int TAKE_PHOTO_CODE = 0;
     public static int count = 0;
-    //private ImageView imageView;
 
+
+
+
+
+    private Context mContext;
+    private Random mRandom = new Random();
+
+    private Button mButtonSendBroadcast;
+    private TextView mTextView;
+
+
+
+    private String path;
 
 
 
@@ -40,13 +55,13 @@ public class Photos extends Fragment {
 
 
 
-
-
         // Here, we are making a folder named picFolder to store
         // pics taken by the camera using this application.
         final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/";
         File newdir = new File(dir);
         newdir.mkdirs();
+
+
         Button capture = (Button) rootView.findViewById(R.id.btnCapture);
         capture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -71,7 +86,7 @@ public class Photos extends Fragment {
                         }
 
                         Uri outputFileUri = Uri.fromFile(newfile);
-
+                        //Implicit intent
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
@@ -92,20 +107,52 @@ public class Photos extends Fragment {
 
 
 
+       //Send Broadcast
+// Get the application context
+        mContext = getActivity().getApplicationContext();
+        // Get the widgets reference from XML layout
+        mButtonSendBroadcast = (Button)rootView.findViewById(R.id.btn_send_broadcast);
+        mTextView = (TextView) rootView.findViewById(R.id.tv);
+
+        // Set a click listener for button
+        mButtonSendBroadcast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Generate a new random number
+                int nextRandomNumber = mRandom.nextInt(100);
+                // Display the random number in TextView
+                mTextView.setText("Random Number : " + nextRandomNumber);
+                // Initialize a new Intent object
+                Intent intent = new Intent();
+                // Set an action for the Intent
+                intent.setAction("project.min.school.schoolapp");
+                // Put an integer value Intent to broadcast it
+                intent.putExtra("RandomNumber",nextRandomNumber);
+                // Finally, send the broadcast
+                getActivity().sendBroadcast(intent);
+            }
+        });
+
+        
+
+
+
         return rootView;
     }
 
 
-   @Override
+
+
+    @Override
     public   void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
         if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             Log.d("CameraDemo", "Pic saved");
 
         }
-
     }
+
+
+
 
 }

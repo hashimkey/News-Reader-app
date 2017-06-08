@@ -7,7 +7,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.SearchView;
@@ -68,6 +70,7 @@ public class News extends Fragment {
     Context context; //Declare the variable context
     private static final String PREF_LAST_RESULT_ID = "lastResultId";
     private static final String PREF_SEARCH_QUERY = "searchQuery";
+    public static final String ARG_ITEM_ID = null;
 
 
     @Override
@@ -103,13 +106,19 @@ public class News extends Fragment {
             }
         };
 
-        ListView listView = (ListView)rootView.findViewById(R.id.listView);
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        //listView.set(String.valueOf(userLista.getCount()));
+       // listView.getCount();
 
-        arrayAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,titles);
+
+        arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, titles);
 
         listView.setAdapter(arrayAdapter);
 
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -133,14 +142,17 @@ public class News extends Fragment {
                         String.format("page size = %dKB", contentSizeKB),
                         Toast.LENGTH_LONG).show();
                 mMemoryCache.put(cacheKey, content.get(position));
+
+                //Explicit intent
                 Intent intent = new Intent(getActivity().getApplicationContext(), NewsActivity.class);
                 intent.putExtra("content", content.get(position));
                 News.this.startActivity(intent);
 
+
             }
         });
-
-        articlesDb = getActivity().openOrCreateDatabase("Articles",MODE_PRIVATE,null);
+        //Create the database table
+        articlesDb = getActivity().openOrCreateDatabase("Articles", MODE_PRIVATE, null);
         articlesDb.execSQL("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, articleId INTEGER, title VARCHAR, content VARCHAR)");
 
         updateListView();
@@ -150,35 +162,41 @@ public class News extends Fragment {
         try {
             // PLauDev comment out task.execute() to prevent loading live data
 
-             //task.execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
+           // task.execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
 
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
+
+        if( Build.VERSION.SDK_INT >= 9){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         return rootView;
     }
 
 
-    public void updateListView()
-    {
+    public void updateListView() {
         //get data from database and display to user
-
-        Cursor c = articlesDb.rawQuery("SELECT * FROM articles",null);
+        Cursor c = articlesDb.rawQuery("SELECT * FROM articles", null);
 
         int contentIndex = c.getColumnIndex("content");
-        int titleIndex  = c.getColumnIndex("title");
+        int titleIndex = c.getColumnIndex("title");
 
         if (c.moveToFirst()) {
-
             titles.clear(); //if database don't return anythings clear arraylist Title
             content.clear();//if database don't return anythings clear arraylist content
-
             do {
 
+
+                //titles.add(c.getString(c.getColumnIndexOrThrow(DatabaseManidzer.COLUMN_DELO)));
                 titles.add(c.getString(titleIndex)); //add current title to titles Arraylists
                 content.add(c.getString(contentIndex));
-            }while (c.moveToNext()); // keep going and go to next item
+            } while (c.moveToNext()); // keep going and go to next item
 
             arrayAdapter.notifyDataSetChanged(); // Update Array Adapter
 
@@ -214,7 +232,7 @@ public class News extends Fragment {
 
                 JSONArray jsonArray = new JSONArray(result);
 
-                int numberOfItems = Math.min(20, jsonArray.length());
+                int numberOfItems = Math.min(5, jsonArray.length());
 
                 /*
                 if (jsonArray.length() < numberOfItems) {
@@ -251,17 +269,15 @@ public class News extends Fragment {
                         urlConnection = (HttpURLConnection) url.openConnection();
                         in = urlConnection.getInputStream();
 
-                        /*
-                        reader = new InputStreamReader(in);
+                        /*reader = new InputStreamReader(in);
                         data = reader.read();
                         String articleContent = "";
                         while (data != -1) {
                             char current = (char) data;
                             articleInfo += current;
-
                             data = reader.read();
-                        }
-                        */
+                        }*/
+
 
                         // PLauDev more efficient http://stackoverflow.com/a/2549222/1827488
                         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
@@ -271,6 +287,7 @@ public class News extends Fragment {
                             resultBuilder.append(line).append("\n");
                         }
 
+                        //articleContent = resultBuilder.toString();
                         String articleContent = resultBuilder.toString();
                         Log.i("articleContent", "(length=" + articleContent.length() + ") ");
                         //Log.i("articleContent", articleContent);
@@ -301,6 +318,10 @@ public class News extends Fragment {
             return null;
         }
 
+        private void publishProgress(String s) {
+
+        }
+
         // when the Process Download Task is complete it  we use onPostExecute
         @Override
         protected void onPostExecute(String s) {
@@ -309,10 +330,11 @@ public class News extends Fragment {
             updateListView();
         }
     }
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflate)
-    {
-        super.onCreateOptionsMenu(menu,inflate);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflate) {
+        menu.clear();
+        super.onCreateOptionsMenu(menu, inflate);
         inflate.inflate(R.menu.menu_main, menu);
 
 
@@ -344,12 +366,18 @@ public class News extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
             return true;
+        }
+        if (id == R.id.action_refresh) {
+
+            content.clear();
+            titles.clear();
+            arrayAdapter.notifyDataSetChanged();
+            new DownloadTask().execute("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty");
         }
         return super.onOptionsItemSelected(item);
     }
