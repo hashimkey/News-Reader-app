@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -37,13 +38,18 @@ public class Photos extends Fragment {
 
     private Context mContext;
     private Random mRandom = new Random();
-
     private Button mButtonSendBroadcast;
     private TextView mTextView;
 
 
+    final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
 
-    private String path;
+
+    Uri imageUri                      = null;
+    static TextView imageDetails      = null;
+    public  static ImageView showImg  = null;
+    Photos CameraActivity = null;
+
 
 
 
@@ -133,7 +139,7 @@ public class Photos extends Fragment {
             }
         });
 
-        
+
 
 
 
